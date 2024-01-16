@@ -26,6 +26,7 @@ $(document).on('input', '#crnInputList input', function() {
 });
 
 $(document).ready(function() {
+    empty = false;
     for (let i =1; i<= 10; i++){
         chrome.storage.local.get('crn_id'+i,function(result) {
             console.log(result)
@@ -35,7 +36,13 @@ $(document).ready(function() {
                 let crnInput = document.getElementById('crn_id'+i);
                 crnInput.value = crn;
             }
-            else return;
+            else {
+                empty=true;
+                return
+            };
         });
+        if (empty){
+            break;
+        }
     }
 });

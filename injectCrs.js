@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    var empty = false;
     for (let i =1; i<= 10; i++){
         let crn = chrome.storage.local.get('crn_id'+i,function(result) {
             console.log(result)
@@ -7,6 +8,11 @@ $(document).ready(function() {
                 let crnFill = document.getElementById('crn_id'+i);
                 crnFill.value = crn;
             }
-            else return;
+            else {
+                empty = true;
+                return;
+            }
         });
+        if (empty)
+            break;
     }});
