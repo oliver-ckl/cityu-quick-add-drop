@@ -5,17 +5,63 @@ addCourseBtn.addEventListener('click', async()=> {
 });
 
 function createAddInput(){
+    if (crnInputId > 10) {
+        alert('You can only add 10 courses');
+        return;
+    }
     var id = crnInputId;
     crnInputId++;
     var inputBox = $('<input>').attr({
         type: 'text',
         id: 'crn_id' + id,
         name: 'crn' + id,
-        placeholder: 'CRN'
+        placeholder: 'CRN',
+        class: 'form-control',
     });
-    $('#crnInputList').append(inputBox);
+    var removeBtn = $('<button>').attr({
+        id: 'removeBtn' + id,
+        name: 'removeBtn' + id,
+        class: 'btn btn-outline-secondary'
+    }).text('Remove').click(function() {
+        $(this).parent().remove();
+        updateIds(id);
+        updateChromeStorage();
+    });
+    var inputGroup = $('<div>').attr({
+        class: 'input-group mb-3',
+        id: 'inputGroup' + id
+    });
+    inputGroup.append(inputBox, removeBtn);
+    $('#crnInputList').append(inputGroup);
 }
 
+function updateIds(id) {
+    $('#crnInputList .input-group').each(function(index, inputGroup) {
+        var currentId = parseInt($(inputGroup).attr('id').replace('inputGroup', ''));
+        if (currentId > id) {
+            $(inputGroup).attr('id', 'inputGroup' + (currentId - 1));
+            $(inputGroup).find('input').attr({
+                id: 'crn_id' + (currentId - 1),
+                name: 'crn' + (currentId - 1)
+            });
+            $(inputGroup).find('button').attr({
+                id: 'removeBtn' + (currentId - 1),
+                name: 'removeBtn' + (currentId - 1)
+            });
+        }
+    });
+    crnInputId--;
+}
+function updateChromeStorage(){
+    chrome.storage.local.clear();
+    $('#crnInputList .input-group').each(function(index, inputGroup) {
+        var currentId = parseInt($(inputGroup).attr('id').replace('inputGroup', ''));
+        var crn = $(inputGroup).find('input').val();
+        var obj = {};
+        obj['crn_id'+currentId] = crn;
+        chrome.storage.local.set(obj);
+    });
+}
 $(document).on('input', '#crnInputList input', function() {
     var inputId = $(this).attr('id');
     var inputVal = $(this).val();
