@@ -16,3 +16,13 @@ $(document).ready(function() {
         if (empty)
             break;
     }});
+
+function dropCourse(){
+    let dropCrs='12618';
+    var tdWithInput = $('td:has(:input)').filter(function() {
+        return $(this).find(':input').val() == dropCrs;
+      });
+    var previousTd = tdWithInput.prev();
+    var selectBox = previousTd.find('select');
+    selectBox.val("DW") //DW is the value for web drop
+}
