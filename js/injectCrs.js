@@ -20,10 +20,12 @@ $(document).ready(function() {
 });
 
 function dropCourse(){
-    let dropCrs='12618';
-    var tdWithInput = $('td').filter(function() {
-        return $(this).text().includes(dropCrs);
-        });
-    var selectBox = tdWithInput.prev().find('select');
-    selectBox.val("DW") //DW is the value for web drop
+    let dropList = ['12618','14775']
+    dropList.forEach(dropCrs => {
+        var tdWithInput = $('td').filter(function() {
+            return $(this).text().includes(dropCrs);
+          });
+        var selectBox = tdWithInput.prev().find('select');
+        selectBox.val("DW") //DW is the value for web drop
+    });
 }
