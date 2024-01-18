@@ -1,5 +1,6 @@
 var errorList = [];
-var tagList = []
+var dropList = [];
+var addList = [];
 //the function treat Capital and small letters as the same
 $.expr.pseudos.contains = $.expr.createPseudo(function(arg) {
     return function( elem ) {
@@ -8,56 +9,82 @@ $.expr.pseudos.contains = $.expr.createPseudo(function(arg) {
 });
 
 $(document).ready(function() {
-    $('ul.tags').on('click', function() {
+    $('#drop-area ul.tags').on('click', function() {
         $('#search-field-drop').focus();
     });
-
+    $('#add-area ul.tags').on('click', function() {
+        $('#search-field-add').focus();
+    });
     $('#search-field-drop').on('keypress', function(event) {
         if (event.key == 'Enter') {
-            createNewTag($(this));
+            createNewTag($(this),'drop');
+        }
+    });
+
+    $('#search-field-add').on('keypress', function(event) {
+        if (event.key == 'Enter') {
+            createNewTag($(this),'add');
         }
     });
 });
-function loadTagList(inputList){
-    generateTagHtml(inputList);
+function loadList(inputList,listType){
+    generateTagHtml(inputList,listType);
 }  
-function createNewTag(tag){
+function createNewTag(tag, listType){
+    console.log('createNewTag started, '+listType);
     let $this = $(tag); 
     inputList = [];
     inputList = $this.val().trim().split(/[\s,-]+/);
     console.log("input list: "+inputList);
     errorList = [];
-    generateTagHtml(inputList);
+    generateTagHtml(inputList, listType);
+    console.log('generateTagHtml finished');
     $this.val('');
-    saveDropList();     
+    console.log('input cleared');
+    saveList(listType);    
+    console.log('createNewTag finished');
 }
-function generateTagHtml(list){
+function generateTagHtml(list, listType){
     list.forEach(tag => {
-        if (validate(tag)) {
+        if (validate(tag,listType)) {
             let listItem = $('<li>', { class: 'addedTag p-1 m-1 d-flex justify-content-center align-items-center rounded-3' }).text(tag); 
             let closeButton = createCloseButton();
-            closeButton.click(function() {
-                tagList = tagList.filter(function(value, index, arr){ return value != tag;});
-                saveDropList();
+            closeButton.click(function() {  
+                if(listType == 'drop'){
+                    dropList = dropList.filter(function(value, index, arr){ return value != tag;});
+                    saveList('drop');
+                } else if(listType == 'add'){
+                    addList = addList.filter(function(value, index, arr){ return value != tag;});
+                    saveList('add');
+                }
             })
             let hiddenInput = $('<input>', { type: 'hidden', value: tag, name: 'tags[]' });
-            listItem.append(closeButton, hiddenInput).insertBefore('.tags .tagAdd');
-            tagList.push(tag);
+            if(listType == 'drop'){
+                listItem.append(closeButton, hiddenInput).insertBefore('.tags #drop-list');
+                dropList.push(tag);
+            } else {
+                listItem.append(closeButton, hiddenInput).insertBefore('.tags #add-list');
+                addList.push(tag);
+            }
+            
         } else {
             console.log("something wrong in this tag: " + tag + " , please check your input"); 
             errorList.push(tag);        
         }
     });
     if (errorList.length > 0) {
-        attachAlertMessage();
+        attachAlertMessage(listType);
     }
 }
 
-function getTagList(){
-    return tagList;
+function getdropList(){
+    return dropList;
+}
+function getaddList(){
+    return addList;
 }
 
-function attachAlertMessage(){
+function attachAlertMessage(listType){
     // Remove the last alert message
     $('#tagContainer .alert').remove();
     // Create the alert message
@@ -66,7 +93,12 @@ function attachAlertMessage(){
     alertMessage.setAttribute("role", "alert");
     alertMessage.innerHTML = "The following tag are not allowed: "+ errorList+" please check the input rules!";
     $(alertMessage).append(createCloseButton());
-    $('#tagContainer').append(alertMessage);
+    if (listType == 'drop'){
+        $('#dropContainer').append(alertMessage);
+    }
+    else{
+        $('#addContainer').append(alertMessage);
+    }  
 }
 
 function createCloseButton(){

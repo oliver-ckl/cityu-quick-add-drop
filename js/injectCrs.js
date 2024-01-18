@@ -1,22 +1,5 @@
 $(document).ready(function() {
-    var empty = false;
-    for (let i =1; i<= 10; i++){
-        let crn;
-        chrome.storage.local.get('crn_id'+i,function(result) {
-            console.log(result)
-            crn=result['crn_id'+i]
-            if (crn!=null){
-                let crnFill = document.getElementById('crn_id'+i);
-                crnFill.value = crn;
-            }
-            else {
-                empty = true;
-                return;
-            }
-        });
-        if (empty)
-            break;
-    }
+    addCourse();
     dropCourse();
 });
 
@@ -24,7 +7,6 @@ function dropCourse(){
     let dropList;
     chrome.storage.local.get("dropList", function(result) {
         dropList = result.dropList;
-        console.log(dropList);
         dropList.forEach(dropCrs => {
             var tdWithInput = $('td').filter(function() {
                 return $(this).text().includes(dropCrs);
@@ -33,5 +15,16 @@ function dropCourse(){
             selectBox.val("DW") //DW is the value for web drop
         });
     });
-    
+}
+
+function addCourse(){
+    let addList;
+    chrome.storage.local.get("addList", function(result) {
+        id=1;
+        result.addList.forEach(addCrs => {
+            $('#crn_id'+id).val(addCrs);
+            console.log(addCrs);
+            id++;
+        });
+    });
 }
