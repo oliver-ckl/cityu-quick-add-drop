@@ -5,21 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/tagEditor/tagEditor.js"></script>
+    <script src="./js/tagEditor/validate.js"></script>
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
-     
+    <link href="./css/tag.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="container mt-3"><h5>Course to Add</h5> </div>
-        <div id="description" class="container">
-            <p>after you input the course Id here, it will be automatically loaded when you enter add/drop page</p>
-            <button type="button" id="addCourseBtn" class="btn btn-primary mb-3">add</button></div>
-        <div id="crnInputList" class="container"></div>
+    <div class="container m-3">
+        <div class="d-flex align-items-start">
+            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <button class="nav-link active" id="v-pills-add-tab" data-bs-toggle="pill" data-bs-target="#v-pills-add" type="button" role="tab" aria-controls="v-pills-add" aria-selected="true">Quick Add</button>
+              <button class="nav-link" id="v-pills-drop-tab" data-bs-toggle="pill" data-bs-target="#v-pills-drop" type="button" role="tab" aria-controls="v-pills-drop" aria-selected="false">Quick Drop</button>
+            </div>
+            <div class="tab-content" id="v-pills-tabContent">
+              <div class="tab-pane fade show active" id="v-pills-add" role="tabpanel" aria-labelledby="v-pills-add-tab">
+                <div class="container "><h5>Course to Add</h5> </div>
+                <div id="description" class="container">
+                <p>after you input the course Id here, it will be automatically loaded when you enter add/drop page</p>
+                <button type="button" id="addCourseBtn" class="btn btn-primary mb-3">add</button></div>
+                <div id="crnInputList" class="container"></div>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-drop" role="tabpanel" aria-labelledby="v-pills-drop-tab">
+                <div class="container "><h5>Course to Drop</h5> </div>
+                <div id="description" class="container">
+                <p>after you input the course Id here, the corresponding course will be switch to web drop when you enter add/drop page</p>
+                <div class="container mt-3">
+                    <div class="container tagContainer" id="tagContainer">
+                        <ul class="tags d-flex flex-wrap item-center container p-2 rounded-3">
+                            <li class="tagAdd taglist" id="drop-list">  
+                                <input type="text" id="search-field-drop" class="m-1 p-1 rounded-3" >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
     </div>
+    
     <script src="./js/popup.js"></script>
 </body>
 </html>

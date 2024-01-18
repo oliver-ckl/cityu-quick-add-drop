@@ -3,7 +3,7 @@ let crnInputId = 1;
 addCourseBtn.addEventListener('click', async()=> {
     createAddInput();
 });
-
+var dropList = [];
 function createAddInput(){
     if (crnInputId > 10) {
         alert('You can only add 10 courses');
@@ -11,13 +11,21 @@ function createAddInput(){
     }
     var id = crnInputId;
     crnInputId++;
+    var lastValidInput = '';
     var inputBox = $('<input>').attr({
         type: 'text',
         id: 'crn_id' + id,
         name: 'crn' + id,
         placeholder: 'CRN',
         class: 'form-control',
-    });
+    }).on('blur', function() {
+        var input = $(this).val();
+        if (isNaN(input) || input.length !== 5) {
+            $(this).val(lastValidInput);
+        } else {
+            lastValidInput = input;
+        }
+    });;
     var removeBtn = $('<button>').attr({
         id: 'removeBtn' + id,
         name: 'removeBtn' + id,
@@ -62,6 +70,10 @@ function updateChromeStorage(){
         chrome.storage.local.set(obj);
     });
 }
+function saveDropList(){  
+    let dropList = getTagList();
+    chrome.storage.local.set({'dropList': dropList});
+}
 $(document).on('input', '#crnInputList input', function() {
     var inputId = $(this).attr('id');
     var inputVal = $(this).val();
@@ -91,4 +103,11 @@ $(document).ready(function() {
             break;
         }
     }
+    chrome.storage.local.get(['dropList'], function(result) {
+        console.log('Value currently is ' + result.dropList);
+        dropList = result.dropList;
+        console.log(dropList);
+        loadTagList(dropList);
+    });
+    
 });
